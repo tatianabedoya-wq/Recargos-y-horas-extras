@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recargos y horas extras · Café de la Montaña</title>
+<style>
+:root{
+  --navy:#0B2545; --gold:#E8A317; --teal:#0F8B8D; --teal-dark:#0A5F61; --teal-light:#D5EEEE;
+  --red:#C0392B; --red-light:#F6DAD6; --slate:#4A5A85; --slate-light:#DDE1EC; --ok:#2E8B57; --ink:#1F2937; --gray:#6B7280; --mist:#EEF2F7; --line:#D1D9E6; --bg:#F7F9FC; --card:#FFFFFF;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.45}
+header{background:var(--navy);color:#fff;padding:28px 16px 32px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header .wrap{padding:0}
+.kicker{color:var(--gold);font-weight:700;letter-spacing:.12em;font-size:13px;text-transform:uppercase}
+h1{font-family:Cambria,Caladea,Georgia,serif;font-size:32px;margin:6px 0 8px;line-height:1.15}
+header p{margin:0;color:#D1D9E6;max-width:720px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chip{background:rgba(255,255,255,.1);border-radius:999px;padding:4px 12px;font-size:14px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:20px 0}
+h2{font-family:Cambria,Caladea,Georgia,serif;color:var(--navy);font-size:24px;margin:0 0 4px}
+.lead{color:var(--gray);margin:0 0 16px}
+.ctx{background:#FFF6E0;border-radius:10px;padding:14px 16px;margin:0 0 4px}
+.ctx b{color:var(--navy)}
+.ref{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;margin-top:12px}
+.ref div{border-radius:8px;padding:8px 10px;font-size:14px}
+.ref .p{background:var(--red-light)} .ref .p b{color:var(--red)}
+.ref .t{background:var(--slate-light)} .ref .t b{color:var(--slate)}
+table.acc{width:100%;border-collapse:collapse}
+table.acc th{background:var(--navy);color:#fff;text-align:left;font-size:14px;padding:10px;font-weight:700}
+table.acc td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.acc tr:nth-child(even) td{background:#FAFBFD}
+.name{font-weight:700;color:var(--navy)}
+.desc{color:var(--gray);font-size:14px}
+.val{white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+select,input[type=text]{font:inherit;font-size:15px;padding:7px 8px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:100%}
+select:focus,input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+.good{border-color:var(--ok)!important;background:#EAF6EF!important}
+.bad{border-color:var(--red)!important;background:#FBE9E7!important}
+.hint{display:none;font-size:13px;color:var(--red);margin-top:4px}
+.hint.show{display:block}
+/* Estado vertical */
+.stmt{max-width:640px;margin:0 auto;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.stmt .hd{text-align:center;font-weight:700;color:var(--navy);margin-bottom:14px;line-height:1.35}
+.stmt .hd span{display:block;font-weight:400;color:var(--gray);font-size:14px}
+.ln{display:grid;grid-template-columns:1fr 210px;gap:12px;align-items:center;padding:5px 0}
+.ln .v{text-align:right;font-variant-numeric:tabular-nums}
+.ln.h{font-weight:700;margin-top:8px}
+.ln.sub{padding-left:16px}
+.ln.tot{font-weight:700;border-radius:6px;padding:7px 8px;margin-top:4px}
+.c-a{color:var(--teal)} .c-p{color:var(--red)} .c-t{color:var(--slate)}
+.bg-a{background:var(--teal-light)} .bg-p{background:var(--red-light)} .bg-t{background:var(--slate-light)} .bg-n{background:var(--navy);color:#fff}
+.ln input{text-align:right}
+.ln .hint{grid-column:1/-1}
+.q{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:12px 0}
+.q.good{background:#EAF6EF} .q.bad{background:#FBE9E7}
+.q p{margin:0 0 10px;font-weight:700;color:var(--navy)}
+.q label{display:flex;gap:10px;align-items:flex-start;padding:6px 4px;cursor:pointer;border-radius:6px}
+.q label:hover{background:rgba(15,139,141,.06)}
+.q input{margin-top:4px;accent-color:var(--teal)}
+.btn{font:inherit;font-weight:700;font-size:17px;border:0;border-radius:10px;padding:13px 22px;cursor:pointer}
+.btn-main{background:var(--teal);color:#fff}
+.btn-main:hover{background:var(--teal-dark)}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+#msg{color:var(--red);font-weight:700}
+#result,#evidence{display:none}
+.score{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.big{font-family:Cambria,Caladea,Georgia,serif;font-size:56px;font-weight:700;color:var(--teal);line-height:1}
+.parts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.part{background:var(--mist);border-radius:10px;padding:12px}
+.part b{display:block;font-size:22px;color:var(--navy)}
+.note{font-size:14px;color:var(--gray)}
+footer{color:var(--gray);font-size:13px;text-align:center;padding:24px 16px 40px}
+@media (max-width:720px){
+  h1{font-size:26px}
+  table.acc thead{display:none}
+  table.acc, table.acc tbody, table.acc tr, table.acc td{display:block;width:100%}
+  table.acc tr{border:1px solid var(--line);border-radius:10px;margin-bottom:12px;padding:6px}
+  table.acc td{border:0;padding:6px 8px}
+  table.acc td.val{text-align:left}
+  table.acc td[data-l]::before{content:attr(data-l);display:block;font-size:12px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .parts{grid-template-columns:1fr}
+  .stmt{padding:14px 10px}
+  .ln{grid-template-columns:1fr 150px}
+}
+.fl{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:6px 0}.fl span{color:var(--ink)}.fl input{max-width:170px}
+</style>
+<style>
+.kwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px;border:1px solid var(--line);border-radius:10px}
+table.kx{border-collapse:collapse;min-width:900px;width:100%;font-size:14px}
+table.kx th{color:#fff;padding:6px;text-align:center;font-size:13px}
+table.kx th.n{background:var(--navy)} table.kx th.e{background:#2E8B57} table.kx th.s{background:var(--red)} table.kx th.b{background:var(--teal)}
+table.kx td{padding:5px 6px;border-top:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+table.kx td.l{text-align:left}
+table.kx tr:nth-child(even) td{background:#FAFBFD}
+table.kx input{width:118px;padding:5px 6px;font-size:14px}
+table.kx input.q{width:70px}
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.sum .tot{background:var(--mist);border-radius:10px;padding:12px}
+.sum label{display:block;font-weight:700;color:var(--navy);margin-bottom:6px}
+@media (max-width:720px){.sum{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="kicker">Contabilidad de Empresas · Unidad III · Sesión 11</div>
+    <h1>Recargos y horas extras · Café de la Montaña</h1>
+    <p>Identifica el tipo de hora, calcula los recargos de la operaria de tostión y liquida su nómina. Al calificar verás de inmediato qué está bien y qué debes revisar.</p>
+    <div class="chips"><span class="chip">3 partes · 22 puntos</span><span class="chip">Nota sobre 5,0</span><span class="chip">Práctica: puedes calificar varias veces</span><span class="chip">Evidencia PNG para Classroom</span></div>
+  </div>
+</header>
+<main class="wrap">
+  <section class="card">
+    <h2>Datos y reglas de noviembre de 2026</h2>
+    <table class="acc"><tbody>
+      <tr><td>Salario mínimo (SMMLV) · Auxilio de transporte (hasta 2 SMMLV = $3.501.810)</td><td style="text-align:right"><b>$1.750.905 · $249.095</b></td></tr>
+      <tr><td>Valor hora = salario mensual ÷ 210 (jornada de 42 horas)</td><td style="text-align:right">Noche: 7:00 p. m. a 6:00 a. m.</td></tr>
+      <tr><td>Recargo nocturno 35 % · Extra diurna 25 % · Extra nocturna 75 % · Dominical o festivo 90 %</td><td style="text-align:right">Si se combinan, se suman</td></tr>
+    </tbody></table>
+  </section>
+
+  <section class="card" id="p1">
+    <h2>Parte 1 · ¿Qué tipo de hora es?</h2>
+    <p class="lead">La operaria trabaja de lunes a sábado. Clasifica cada situación (6 puntos) y responde las preguntas (3 puntos).</p>
+    <table class="acc"><thead><tr><th>Situación</th><th style="width:300px">Tipo de hora</th></tr></thead><tbody id="rows"></tbody></table>
+    <div id="qs1" style="margin-top:14px"></div>
+  </section>
+
+  <section class="card" id="p2">
+    <h2>Parte 2 · Los recargos de noviembre</h2>
+    <p class="lead">La operaria de tostión gana <b>$2.520.000</b> al mes. Escribe los valores en pesos, sin signo $. 7 puntos.</p>
+    <div class="tot" style="background:var(--mist);border-radius:10px;padding:12px">
+      <div class="fl"><span><b>Valor de la hora ordinaria</b></span><input type="text" inputmode="numeric" id="vh"></div>
+      <div class="fl"><span>8 horas de noche dentro de su turno (solo el recargo)</span><input type="text" inputmode="numeric" id="r1"></div>
+      <div class="fl"><span>4 horas extras diurnas</span><input type="text" inputmode="numeric" id="r2"></div>
+      <div class="fl"><span>3 horas extras nocturnas</span><input type="text" inputmode="numeric" id="r3"></div>
+      <div class="fl"><span>7 horas en domingo, dentro de su jornada, de día</span><input type="text" inputmode="numeric" id="r4"></div>
+      <div class="fl"><span>2 horas extras dominicales nocturnas</span><input type="text" inputmode="numeric" id="r5"></div>
+      <div class="fl"><span><b>Total recargos y horas extras</b></span><input type="text" inputmode="numeric" id="rt"></div>
+    </div>
+    <div class="hint" id="h2" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card" id="p3">
+    <h2>Parte 3 · Su nómina de noviembre</h2>
+    <p class="lead">6 puntos.</p>
+    <div class="tot" style="background:var(--mist);border-radius:10px;padding:12px">
+      <div class="fl"><span>Auxilio de transporte</span><input type="text" inputmode="numeric" id="n_aux"></div>
+      <div class="fl"><span>Total devengado</span><input type="text" inputmode="numeric" id="n_dev"></div>
+      <div class="fl"><span>Base para salud y pensión</span><input type="text" inputmode="numeric" id="n_ibc"></div>
+      <div class="fl"><span>Salud (4 %)</span><input type="text" inputmode="numeric" id="n_sal"></div>
+      <div class="fl"><span>Pensión (4 %)</span><input type="text" inputmode="numeric" id="n_pen"></div>
+      <div class="fl"><span><b>Neto a pagar</b></span><input type="text" inputmode="numeric" id="n_net"></div>
+    </div>
+    <div class="hint" id="h3" style="margin-top:10px"></div>
+  </section>
+
+  <section class="card">
+    <div class="actions"><button class="btn btn-main" id="grade">Calificar</button><span id="msg"></span></div>
+    <p class="note" style="margin:10px 0 0">Puedes calificar varias veces. El comprobante registra el número de intentos.</p>
+  </section>
+
+  <section class="card" id="result">
+    <h2>Resultado</h2>
+    <div class="score"><div class="big" id="nota">0,0</div><div><div id="pts" style="font-weight:700;color:var(--navy)"></div><div class="note" id="att"></div></div></div>
+    <div class="parts">
+      <div class="part">Parte 1 · Tipos de hora<b id="ps1">0 / 9</b></div>
+      <div class="part">Parte 2 · Recargos<b id="ps2">0 / 7</b></div>
+      <div class="part">Parte 3 · Nómina<b id="ps3">0 / 6</b></div>
+    </div>
+    <p class="note" id="advice" style="margin-top:12px"></p>
+  </section>
+
+  <section class="card" id="evidence">
+    <h2>Evidencia para Classroom</h2>
+    <p class="lead">Escribe tu nombre completo y descarga el comprobante. Súbelo a la tarea en Google Classroom.</p>
+    <div class="actions"><input type="text" id="student" placeholder="Nombre y apellidos" style="max-width:380px" autocomplete="name"><button class="btn btn-gold" id="dl">Descargar comprobante PNG</button></div>
+    <p class="note" id="dlmsg" style="margin-top:10px"></p>
+  </section>
+</main>
+<footer>Universidad Tecnológica de Pereira · Ingeniería Industrial · Contabilidad de Empresas (II243)</footer>
+<script>
+(function(){
+  var CL=[["RN","Recargo nocturno (35 %)"],["HED","Hora extra diurna (25 %)"],["HEN","Hora extra nocturna (75 %)"],["DF","Dominical o festiva (90 %)"],["HEDD","Extra dominical diurna (115 %)"],["HEDN","Extra dominical nocturna (165 %)"]];
+  var CLN={RN:"Recargo nocturno",HED:"Extra diurna",HEN:"Extra nocturna",DF:"Dominical o festiva",HEDD:"Extra dominical diurna",HEDN:"Extra dominical nocturna"};
+  var P1=[["Esta semana su turno es nocturno. El martes, dentro de su turno, trabaja de 9:00 p. m. a 11:00 p. m.","RN","Está dentro de su jornada, pero es de noche."],
+    ["El jueves terminó su jornada a las 3:00 p. m. y se quedó hasta las 5:00 p. m.","HED","Es después del turno y antes de las 7:00 p. m."],
+    ["El miércoles, después de su jornada, trabajó de 7:30 p. m. a 9:30 p. m.","HEN","Es después del turno y la noche empieza a las 7:00 p. m."],
+    ["Un festivo trabaja su turno normal, de 8:00 a. m. a 3:00 p. m.","DF","Está dentro de su jornada, pero es festivo."],
+    ["Un domingo, después de su turno, trabaja 2 horas más, de 4:00 p. m. a 6:00 p. m.","HEDD","Es extra, es domingo y es de día."],
+    ["Un festivo, después de su turno, trabaja de 8:00 p. m. a 9:00 p. m.","HEDN","Es extra, es festivo y es de noche."]];
+  var Q1=[
+    {p:"Con la jornada de 42 horas semanales, ¿entre cuánto se divide el salario mensual para obtener el valor de la hora?", o:["240","220","210","192"], a:2, h:"42 horas ÷ 6 días × 30 días."},
+    {p:"¿Cuántas horas extras se pueden trabajar como máximo?", o:["4 al día y 24 a la semana","2 al día y 12 a la semana","Las que acuerden el trabajador y la empresa","3 al día y 15 a la semana"], a:1, h:"Revisa la diapositiva de la jornada y los horarios."},
+    {p:"¿Los recargos y las horas extras se tienen en cuenta para calcular salud y pensión?", o:["No, porque no son salario","Sí, porque son salario","Solo las horas extras","Solo si el trabajador gana más de 2 SMMLV"], a:1, h:"Compáralos con el auxilio de transporte."}];
+  var ANS2={vh:12000,r1:33600,r2:60000,r3:63000,r4:159600,r5:63600,rt:379800};
+  var ANS3={n_aux:249095,n_dev:3148895,n_ibc:2899800,n_sal:115992,n_pen:115992,n_net:2916911};
+  var HINT={vh:"Valor hora = salario mensual ÷ 210.",r1:"Dentro del turno se suma solo el recargo: horas × valor hora × 35 %.",r2:"Horas × valor hora × 1,25.",r3:"Horas × valor hora × 1,75.",r4:"Horas × valor hora × 1,90.",r5:"Horas × valor hora × 2,65 (75 % + 90 % + la hora).",rt:"Suma de los cinco valores anteriores.",
+    n_aux:"Gana menos de 2 SMMLV ($3.501.810).",n_dev:"Salario + auxilio + recargos y horas extras.",n_ibc:"Salario + recargos y horas extras, sin el auxilio.",n_sal:"4 % de la base para salud y pensión.",n_pen:"4 % de la base para salud y pensión.",n_net:"Total devengado − salud − pensión."};
+  document.getElementById("rows").innerHTML=P1.map(function(r,i){return '<tr><td><div class="name">'+(i+1)+'. '+r[0]+'</div><div class="hint" id="hc'+i+'">Pista: '+r[2]+'</div></td><td data-l="Tipo de hora"><select id="c'+i+'"><option value="">Elige…</option>'+CL.map(function(c){return '<option value="'+c[0]+'">'+c[1]+'</option>';}).join("")+'</select></td></tr>';}).join("");
+  function qhtml(arr,pre){return arr.map(function(q,i){return '<div class="q" id="'+pre+i+'"><p>'+(i+1)+'. '+q.p+'</p>'+q.o.map(function(o,j){return '<label><input type="radio" name="'+pre+'r'+i+'" value="'+j+'"><span>'+o+'</span></label>';}).join("")+'<div class="hint" id="'+pre+'h'+i+'">Pista: '+q.h+'</div></div>';}).join("");}
+  document.getElementById("qs1").innerHTML=qhtml(Q1,"a");
+  function num(s){var t=(s||"").replace(/[^0-9]/g,""); return t===""?null:parseInt(t,10);}
+  function mark(el,ok){el.classList.remove("good","bad"); el.classList.add(ok?"good":"bad");}
+  function hintBox(id,bad){var u=bad.filter(function(x,i,a){return a.indexOf(x)===i;}),k=document.getElementById(id); k.innerHTML=u.length?"<b>Pistas para las casillas en rojo:</b><br>• "+u.join("<br>• "):""; k.classList.toggle("show",u.length>0);}
+  var attempts=0,last=null;
+  document.getElementById("grade").addEventListener("click",function(){
+    var msg=document.getElementById("msg"); msg.textContent=""; var miss=0;
+    P1.forEach(function(r,i){ if(!document.getElementById("c"+i).value) miss++; });
+    Object.keys(ANS2).concat(Object.keys(ANS3)).forEach(function(k){ if(num(document.getElementById(k).value)===null) miss++; });
+    Q1.forEach(function(q,i){ if(!document.querySelector('input[name="ar'+i+'"]:checked')) miss++; });
+    if(miss>0){ msg.textContent="Te faltan "+miss+" respuestas por completar."; return; }
+    attempts++; var s1=0,s2=0,s3=0,d1=[],qa1=[],tv={},b2=[],b3=[];
+    P1.forEach(function(r,i){ var el=document.getElementById("c"+i), ok=el.value===r[1]; mark(el,ok); if(ok) s1++; d1.push({c:el.value,ok:ok}); document.getElementById("hc"+i).classList.toggle("show",!ok); });
+    Q1.forEach(function(q,i){ var v=parseInt(document.querySelector('input[name="ar'+i+'"]:checked').value,10), ok=v===q.a; mark(document.getElementById("a"+i),ok); document.getElementById("ah"+i).classList.toggle("show",!ok); if(ok) s1++; qa1.push(ok); });
+    Object.keys(ANS2).forEach(function(k){ var el=document.getElementById(k), v=num(el.value), ok=v===ANS2[k]; mark(el,ok); tv[k]={v:v,ok:ok}; if(ok) s2++; else b2.push(HINT[k]); });
+    Object.keys(ANS3).forEach(function(k){ var el=document.getElementById(k), v=num(el.value), ok=v===ANS3[k]; mark(el,ok); tv[k]={v:v,ok:ok}; if(ok) s3++; else b3.push(HINT[k]); });
+    hintBox("h2",b2); hintBox("h3",b3);
+    var pts=s1+s2+s3, nota=Math.round(pts/22*50)/10;
+    last={s1:s1,s2:s2,s3:s3,pts:pts,nota:nota,d1:d1,qa1:qa1,tv:tv,attempt:attempts,when:new Date()};
+    document.getElementById("result").style.display="block"; document.getElementById("evidence").style.display="block";
+    document.getElementById("nota").textContent=nota.toFixed(1).replace(".",",");
+    document.getElementById("pts").textContent=pts+" de 22 puntos"; document.getElementById("att").textContent="Intento "+attempts;
+    document.getElementById("ps1").textContent=s1+" / 9"; document.getElementById("ps2").textContent=s2+" / 7"; document.getElementById("ps3").textContent=s3+" / 6";
+    document.getElementById("advice").textContent=pts===22?"¡Excelente! Calculaste bien los recargos y la nómina. Escribe tu nombre y descarga tu comprobante.":"Las casillas en rojo tienen error. Revísalas con ayuda de las pistas y vuelve a calificar, o descarga el comprobante con este resultado.";
+    document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  function hash(str){var h=2166136261; for(var i=0;i<str.length;i++){h^=str.charCodeAt(i); h=Math.imul(h,16777619);} return ("00000000"+(h>>>0).toString(16)).slice(-8).toUpperCase();}
+  function rr(c,x0,y0,w,h,r){c.beginPath();c.moveTo(x0+r,y0);c.arcTo(x0+w,y0,x0+w,y0+h,r);c.arcTo(x0+w,y0+h,x0,y0+h,r);c.arcTo(x0,y0+h,x0,y0,r);c.arcTo(x0,y0,x0+w,y0,r);c.closePath();}
+  var LAB={vh:"Valor hora",r1:"Recargo nocturno (8 h)",r2:"Extras diurnas (4 h)",r3:"Extras nocturnas (3 h)",r4:"Dominicales (7 h)",r5:"Extras dominicales noct. (2 h)",rt:"Total recargos",n_aux:"Auxilio de transporte",n_dev:"Total devengado",n_ibc:"Base salud y pensión",n_sal:"Salud",n_pen:"Pensión",n_net:"Neto a pagar"};
+  document.getElementById("dl").addEventListener("click",function(){
+    var name=document.getElementById("student").value.trim(), m=document.getElementById("dlmsg");
+    if(!last){ m.textContent="Primero califica la actividad."; return; }
+    if(name.length<5){ m.textContent="Escribe tu nombre completo para generar el comprobante."; return; }
+    var W=1200,H=1160,cv=document.createElement("canvas"); cv.width=W; cv.height=H;
+    var x=cv.getContext("2d"), F='Calibri, Carlito, "Segoe UI", Arial, sans-serif', S='Cambria, Caladea, Georgia, serif';
+    x.fillStyle="#FFFFFF"; x.fillRect(0,0,W,H); x.fillStyle="#0B2545"; x.fillRect(0,0,W,190);
+    x.fillStyle="#E8A317"; x.font="700 22px "+F; x.fillText("CONTABILIDAD DE EMPRESAS · UNIDAD III · SESIÓN 11",60,62);
+    x.fillStyle="#FFFFFF"; x.font="700 40px "+S; x.fillText("Recargos y horas extras",60,118);
+    x.fillStyle="#D1D9E6"; x.font="22px "+F; x.fillText("Café de la Montaña · Comprobante de actividad autocalificable",60,158);
+    var d=last.when, when=d.toLocaleDateString("es-CO",{day:"2-digit",month:"long",year:"numeric"})+" · "+d.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+    x.fillStyle="#1F2937"; x.font="700 30px "+F; x.fillText(name,60,250); x.fillStyle="#6B7280"; x.font="22px "+F; x.fillText(when+" · Intento "+last.attempt,60,285);
+    x.fillStyle="#EEF2F7"; rr(x,820,215,320,150,16); x.fill();
+    x.fillStyle="#0F8B8D"; x.font="700 76px "+S; x.textAlign="center"; x.fillText(last.nota.toFixed(1).replace(".",","),980,310);
+    x.fillStyle="#1F2937"; x.font="22px "+F; x.fillText(last.pts+" de 22 puntos",980,345); x.textAlign="left";
+    [["Parte 1 · Tipos de hora",last.s1+" / 9"],["Parte 2 · Recargos",last.s2+" / 7"],["Parte 3 · Nómina",last.s3+" / 6"]].forEach(function(p,i){ var px=60+i*360; x.fillStyle="#EEF2F7"; rr(x,px,395,340,86,12); x.fill(); x.fillStyle="#6B7280"; x.font="20px "+F; x.fillText(p[0],px+20,428); x.fillStyle="#0B2545"; x.font="700 30px "+F; x.fillText(p[1],px+20,466); });
+    var y=530; x.fillStyle="#0B2545"; x.font="700 22px "+F; x.fillText("Parte 1",60,y); y+=32;
+    last.d1.forEach(function(r,i){ var px=60+(i%2)*560, py=y+Math.floor(i/2)*28; x.fillStyle=r.ok?"#2E8B57":"#C0392B"; x.font="700 17px "+F; x.fillText((i+1)+". "+(r.ok?"✓ ":"✗ ")+CLN[r.c],px,py); });
+    y+=3*28+6; x.fillStyle="#0B2545"; x.font="700 18px "+F; x.fillText("Preguntas:",60,y);
+    last.qa1.forEach(function(ok,i){ x.fillStyle=ok?"#2E8B57":"#C0392B"; x.font="700 18px "+F; x.fillText((i+1)+(ok?" ✓":" ✗"),180+i*70,y); });
+    y+=46; x.fillStyle="#0B2545"; x.font="700 22px "+F; x.fillText("Partes 2 y 3",60,y); y+=32;
+    var keys=Object.keys(ANS2).concat(Object.keys(ANS3));
+    keys.forEach(function(k,j){ var t=last.tv[k], px=60+(j%2)*560, py=y+Math.floor(j/2)*28; x.fillStyle="#1F2937"; x.font="17px "+F; x.fillText(LAB[k],px,py);
+      x.fillStyle=t.ok?"#2E8B57":"#C0392B"; x.font="700 17px "+F; x.fillText((t.ok?"✓ ":"✗ ")+t.v.toLocaleString("es-CO"),px+270,py); });
+    var code=hash(name+"|"+last.pts+"|"+last.attempt+"|"+d.toISOString()+"|"+JSON.stringify(last.tv));
+    x.fillStyle="#6B7280"; x.font="18px "+F; x.fillText("Código de verificación: "+code,60,H-40); x.textAlign="right"; x.fillText("UTP · Ingeniería Industrial · II243",W-60,H-40);
+    var a=document.createElement("a"); a.download="Sesion11_Recargos_"+name.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g,"").trim().replace(/\s+/g,"_")+".png";
+    a.href=cv.toDataURL("image/png"); document.body.appendChild(a); a.click(); a.remove();
+    m.textContent="Comprobante descargado (código "+code+"). Súbelo a la tarea en Classroom.";
+  });
+})();
+</script>
+</body>
+</html>
